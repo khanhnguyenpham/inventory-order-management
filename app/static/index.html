@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Ứng dụng quản lý tồn kho và đơn hàng dành cho cửa hàng nhỏ, xây dựng bằng FastAPI và SQLite."
+    />
+    <title>Kho Gọn · Quản lý tồn kho và đơn hàng</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+    <main class="login-page" id="login-page">
+      <section class="login-story">
+        <a class="wordmark light" href="/" aria-label="Kho Gọn - Trang chủ">
+          <span>KG</span>
+          <strong>Kho Gọn</strong>
+        </a>
+        <div class="story-copy">
+          <p class="eyebrow">VẬN HÀNH CỬA HÀNG NHỎ</p>
+          <h1>Biết hàng còn bao nhiêu trước khi nhận thêm đơn.</h1>
+          <p>
+            Một nơi để theo dõi nhập – xuất, xử lý đơn hàng và nhận diện sản phẩm cần bổ sung mà không phải
+            ghép nhiều bảng tính rời rạc.
+          </p>
+        </div>
+        <div class="story-proof">
+          <div><strong>Giao dịch nguyên tử</strong><span>Đơn lỗi không làm sai tồn kho</span></div>
+          <div><strong>Có dấu vết</strong><span>Mọi thay đổi quan trọng đều được ghi nhận</span></div>
+        </div>
+      </section>
+
+      <section class="login-panel">
+        <form class="login-card" id="login-form">
+          <div>
+            <p class="eyebrow dark">BẢN DEMO PORTFOLIO</p>
+            <h2>Đăng nhập hệ thống</h2>
+            <p class="muted">Dùng tài khoản quản lý bên dưới để trải nghiệm đầy đủ chức năng.</p>
+          </div>
+          <label>
+            <span>Email</span>
+            <input id="login-email" type="email" value="quanly@demo.vn" autocomplete="username" required />
+          </label>
+          <label>
+            <span>Mật khẩu</span>
+            <input
+              id="login-password"
+              type="password"
+              value="Demo@123"
+              autocomplete="current-password"
+              minlength="8"
+              required
+            />
+          </label>
+          <button class="button primary wide" id="login-submit" type="submit">
+            <span>Đăng nhập</span><span aria-hidden="true">→</span>
+          </button>
+          <div class="demo-account">
+            <span>Tài khoản demo</span>
+            <code>quanly@demo.vn</code>
+            <code>Demo@123</code>
+          </div>
+          <p class="form-error" id="login-error" role="alert"></p>
+        </form>
+      </section>
+    </main>
+
+    <div class="app-shell" id="app-shell" hidden>
+      <aside class="sidebar">
+        <a class="wordmark" href="#dashboard" aria-label="Kho Gọn - Tổng quan">
+          <span>KG</span>
+          <strong>Kho Gọn</strong>
+        </a>
+        <nav aria-label="Điều hướng chính">
+          <button class="nav-item active" data-view="dashboard" type="button">
+            <span aria-hidden="true">⌂</span>Tổng quan
+          </button>
+          <button class="nav-item" data-view="products" type="button">
+            <span aria-hidden="true">▦</span>Sản phẩm
+          </button>
+          <button class="nav-item" data-view="orders" type="button">
+            <span aria-hidden="true">≣</span>Đơn hàng
+          </button>
+          <button class="nav-item" data-view="inventory" type="button">
+            <span aria-hidden="true">⇄</span>Nhập / xuất kho
+          </button>
+          <button class="nav-item manager-only" data-view="audit" type="button">
+            <span aria-hidden="true">◎</span>Nhật ký hệ thống
+          </button>
+        </nav>
+        <div class="sidebar-note">
+          <span>API DOCUMENTATION</span>
+          <a href="/docs" target="_blank" rel="noreferrer">Mở Swagger UI ↗</a>
+        </div>
+        <div class="user-summary">
+          <div class="avatar" id="user-avatar">NA</div>
+          <div><strong id="user-name">Người dùng</strong><span id="user-role">Vai trò</span></div>
+          <button id="logout-button" type="button" aria-label="Đăng xuất">↗</button>
+        </div>
+      </aside>
+
+      <header class="mobile-header">
+        <a class="wordmark" href="#dashboard"><span>KG</span><strong>Kho Gọn</strong></a>
+        <button id="mobile-menu-button" type="button" aria-label="Mở điều hướng">☰</button>
+      </header>
+
+      <main class="workspace">
+        <section class="view active" id="view-dashboard" data-title="Tổng quan vận hành">
+          <header class="page-header">
+            <div><p class="eyebrow dark">HÔM NAY</p><h1>Tổng quan vận hành</h1></div>
+            <div class="header-actions">
+              <button class="button secondary" data-open="movement-dialog" type="button">Nhập / xuất kho</button>
+              <button class="button primary" data-open="order-dialog" type="button">+ Tạo đơn hàng</button>
+            </div>
+          </header>
+          <div class="metric-grid" id="metric-grid">
+            <article class="metric-card"><span>Giá trị tồn kho</span><strong id="metric-value">—</strong><small>Giá bán × số lượng hiện có</small></article>
+            <article class="metric-card"><span>Đơn hôm nay</span><strong id="metric-orders">—</strong><small id="metric-revenue">— doanh thu</small></article>
+            <article class="metric-card warning"><span>Cần nhập thêm</span><strong id="metric-low-stock">—</strong><small>Sản phẩm chạm ngưỡng đặt lại</small></article>
+            <article class="metric-card"><span>Đơn vị trong kho</span><strong id="metric-units">—</strong><small id="metric-products">— sản phẩm đang hoạt động</small></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel sales-panel">
+              <div class="panel-heading"><div><p class="panel-kicker">7 NGÀY GẦN NHẤT</p><h2>Doanh thu theo ngày</h2></div><strong id="week-revenue">—</strong></div>
+              <div class="bar-chart" id="sales-chart" aria-label="Biểu đồ doanh thu bảy ngày"></div>
+            </article>
+            <article class="panel attention-panel">
+              <div class="panel-heading"><div><p class="panel-kicker">CẦN CHÚ Ý</p><h2>Tồn kho thấp</h2></div><button class="text-button" data-view-jump="products" type="button">Xem tất cả →</button></div>
+              <div class="attention-list" id="low-stock-list"></div>
+            </article>
+            <article class="panel recent-panel">
+              <div class="panel-heading"><div><p class="panel-kicker">GẦN ĐÂY</p><h2>Đơn hàng mới nhất</h2></div><button class="text-button" data-view-jump="orders" type="button">Quản lý đơn →</button></div>
+              <div class="table-wrap"><table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Số lượng</th><th>Trạng thái</th><th>Giá trị</th></tr></thead><tbody id="recent-orders-body"></tbody></table></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="view-products" data-title="Danh mục sản phẩm">
+          <header class="page-header">
+            <div><p class="eyebrow dark">DANH MỤC</p><h1>Sản phẩm và tồn kho</h1></div>
+            <button class="button primary manager-only" data-open="product-dialog" type="button">+ Thêm sản phẩm</button>
+          </header>
+          <article class="panel table-panel">
+            <div class="table-toolbar">
+              <label class="search-field"><span aria-hidden="true">⌕</span><input id="product-search" type="search" placeholder="Tìm SKU, tên hoặc nhóm hàng" /></label>
+              <label class="switch"><input id="low-stock-filter" type="checkbox" /><span>Chỉ xem tồn thấp</span></label>
+            </div>
+            <div class="table-wrap"><table><thead><tr><th>Sản phẩm</th><th>Nhóm hàng</th><th>Giá bán</th><th>Tồn kho</th><th>Ngưỡng nhập</th><th>Trạng thái</th></tr></thead><tbody id="products-body"></tbody></table></div>
+          </article>
+        </section>
+
+        <section class="view" id="view-orders" data-title="Quản lý đơn hàng">
+          <header class="page-header">
+            <div><p class="eyebrow dark">BÁN HÀNG</p><h1>Đơn hàng</h1></div>
+            <button class="button primary" data-open="order-dialog" type="button">+ Tạo đơn hàng</button>
+          </header>
+          <article class="panel table-panel">
+            <div class="table-wrap"><table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Người tạo</th><th>Thời gian</th><th>Trạng thái</th><th>Giá trị</th><th></th></tr></thead><tbody id="orders-body"></tbody></table></div>
+          </article>
+        </section>
+
+        <section class="view" id="view-inventory" data-title="Nhập và xuất kho">
+          <header class="page-header">
+            <div><p class="eyebrow dark">DÒNG HÀNG</p><h1>Lịch sử nhập / xuất</h1></div>
+            <button class="button primary" data-open="movement-dialog" type="button">+ Ghi nhận giao dịch</button>
+          </header>
+          <article class="panel table-panel">
+            <div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>Sản phẩm</th><th>Loại</th><th>Thay đổi</th><th>Tồn sau</th><th>Tham chiếu</th><th>Người tạo</th></tr></thead><tbody id="movements-body"></tbody></table></div>
+          </article>
+        </section>
+
+        <section class="view" id="view-audit" data-title="Nhật ký hệ thống">
+          <header class="page-header"><div><p class="eyebrow dark">KIỂM SOÁT</p><h1>Nhật ký hệ thống</h1></div></header>
+          <article class="panel table-panel">
+            <p class="panel-description">Lưu lại các thao tác làm thay đổi dữ liệu nghiệp vụ để hỗ trợ truy vết khi có sai lệch.</p>
+            <div class="table-wrap"><table><thead><tr><th>Thời gian</th><th>Người thực hiện</th><th>Hành động</th><th>Đối tượng</th><th>Chi tiết</th></tr></thead><tbody id="audit-body"></tbody></table></div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="product-dialog">
+      <form class="dialog-card" id="product-form">
+        <header><div><p class="panel-kicker">SẢN PHẨM MỚI</p><h2>Thêm vào danh mục</h2></div><button class="icon-button" data-close type="button">×</button></header>
+        <div class="form-grid two">
+          <label><span>Mã SKU</span><input name="sku" placeholder="VD: CF-ARABICA-250" required pattern="[A-Za-z0-9-]+" /></label>
+          <label><span>Tên sản phẩm</span><input name="name" required minlength="3" /></label>
+          <label><span>Nhóm hàng</span><input name="category" required /></label>
+          <label><span>Đơn vị tính</span><input name="unit" placeholder="gói, hộp, chai..." required /></label>
+          <label><span>Giá bán (VNĐ)</span><input name="price_vnd" type="number" min="0" step="1000" required /></label>
+          <label><span>Tồn ban đầu</span><input name="stock_quantity" type="number" min="0" value="0" required /></label>
+          <label><span>Ngưỡng cần nhập</span><input name="reorder_level" type="number" min="0" value="5" required /></label>
+        </div>
+        <p class="form-error" data-form-error></p>
+        <footer><button class="button secondary" data-close type="button">Hủy</button><button class="button primary" type="submit">Lưu sản phẩm</button></footer>
+      </form>
+    </dialog>
+
+    <dialog id="movement-dialog">
+      <form class="dialog-card" id="movement-form">
+        <header><div><p class="panel-kicker">GIAO DỊCH KHO</p><h2>Ghi nhận nhập / xuất</h2></div><button class="icon-button" data-close type="button">×</button></header>
+        <div class="form-grid two">
+          <label class="full"><span>Sản phẩm</span><select name="product_id" data-product-select required></select></label>
+          <label><span>Loại giao dịch</span><select name="movement_type" id="movement-type"><option value="IN">Nhập kho</option><option value="OUT">Xuất kho</option><option value="ADJUST">Điều chỉnh</option></select></label>
+          <label><span>Số lượng</span><input name="quantity" type="number" min="1" required /></label>
+          <label id="adjustment-direction-field" hidden><span>Hướng điều chỉnh</span><select name="adjustment_direction"><option value="INCREASE">Tăng tồn</option><option value="DECREASE">Giảm tồn</option></select></label>
+          <label><span>Mã tham chiếu</span><input name="reference" placeholder="VD: PN-2026-018" /></label>
+          <label class="full"><span>Ghi chú</span><textarea name="note" rows="3" maxlength="300"></textarea></label>
+        </div>
+        <p class="form-error" data-form-error></p>
+        <footer><button class="button secondary" data-close type="button">Hủy</button><button class="button primary" type="submit">Ghi nhận</button></footer>
+      </form>
+    </dialog>
+
+    <dialog id="order-dialog">
+      <form class="dialog-card large" id="order-form">
+        <header><div><p class="panel-kicker">ĐƠN BÁN HÀNG</p><h2>Tạo đơn mới</h2></div><button class="icon-button" data-close type="button">×</button></header>
+        <div class="form-grid two">
+          <label><span>Tên khách hàng</span><input name="customer_name" required minlength="2" /></label>
+          <label><span>Số điện thoại</span><input name="customer_phone" inputmode="tel" /></label>
+        </div>
+        <div class="order-lines-heading"><strong>Sản phẩm</strong><button class="text-button" id="add-order-line" type="button">+ Thêm dòng</button></div>
+        <div id="order-lines"></div>
+        <div class="order-total"><span>Tổng giá trị</span><strong id="order-total-value">0 ₫</strong></div>
+        <p class="form-error" data-form-error></p>
+        <footer><button class="button secondary" data-close type="button">Hủy</button><button class="button primary" type="submit">Xác nhận đơn hàng</button></footer>
+      </form>
+    </dialog>
+
+    <template id="order-line-template">
+      <div class="order-line">
+        <select class="order-product" required></select>
+        <input class="order-quantity" type="number" min="1" value="1" required aria-label="Số lượng" />
+        <strong class="order-line-total">0 ₫</strong>
+        <button class="remove-line" type="button" aria-label="Xóa dòng">×</button>
+      </div>
+    </template>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>
