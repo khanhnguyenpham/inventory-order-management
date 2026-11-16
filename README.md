@@ -77,7 +77,7 @@ docker run --rm -p 8000:8000 -e APP_TOKEN_SECRET=replace-with-a-long-random-secr
 ```bash
 ruff format --check .
 ruff check .
-pytest
+python -m pytest
 ```
 
 Bộ test bao phủ đăng nhập, phân quyền, SKU trùng, rollback giao dịch, chống tồn âm, idempotency, hoàn kho khi hủy đơn, audit log và khả năng sinh OpenAPI schema.

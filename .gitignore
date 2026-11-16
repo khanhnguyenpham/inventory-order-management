@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .pytest-*-tmp/
+.ci-logs/
 .ruff_cache/
 .venv/
 .venv-wsl/
