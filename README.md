@@ -2,7 +2,7 @@
 
 Ứng dụng web tiếng Việt dành cho cửa hàng nhỏ cần theo dõi nhập – xuất, tạo đơn bán hàng và nhận diện sản phẩm sắp hết. Project tập trung vào năng lực **Python backend**: thiết kế API, giao dịch cơ sở dữ liệu, xác thực, phân quyền, kiểm thử và triển khai.
 
-> Đây là project portfolio với dữ liệu demo. Không đại diện cho một cửa hàng hoặc doanh nghiệp thật.
+> Đây là ứng dụng web portfolio sử dụng dữ liệu mẫu. Không đại diện cho một cửa hàng hoặc doanh nghiệp thật.
 
 ## Vấn đề nghiệp vụ
 
@@ -27,14 +27,14 @@ Khi tồn kho và đơn hàng được ghi ở nhiều bảng tính, một lần
 - Nhật ký hệ thống và Swagger UI tại `/docs`.
 - Giao diện responsive, toàn bộ dữ liệu lấy từ API thật.
 
-## Tài khoản demo
+## Tài khoản dùng thử
 
 | Vai trò | Email | Mật khẩu |
 |---|---|---|
 | Quản lý | `quanly@demo.vn` | `Demo@123` |
 | Nhân viên | `nhanvien@demo.vn` | `Demo@123` |
 
-Chỉ sử dụng các tài khoản này cho bản demo; môi trường thật phải có quy trình tạo người dùng và thay đổi mật khẩu riêng.
+Các tài khoản dùng thử giúp nhà tuyển dụng kiểm tra đầy đủ luồng nghiệp vụ. Môi trường vận hành thực tế phải có quy trình tạo người dùng và thay đổi mật khẩu riêng.
 
 ## Kiến trúc
 
@@ -51,7 +51,7 @@ FastAPI ── xác thực + phân quyền ── dịch vụ nghiệp vụ
 
 Chi tiết nằm trong [tài liệu kiến trúc](docs/architecture.md), [mô hình dữ liệu](docs/data_model.md) và [nhật ký quyết định](docs/decisions.md).
 
-## Chạy local
+## Chạy trên máy cá nhân
 
 Yêu cầu Python 3.11–3.13. Python 3.14 trên một số bản Windows hiện có vấn đề event loop; Docker hoặc WSL là lựa chọn ổn định nếu gặp lỗi này.
 
@@ -63,7 +63,7 @@ pip install -r requirements-dev.txt
 uvicorn app.main:app --reload
 ```
 
-Mở `http://127.0.0.1:8000`. Cơ sở dữ liệu demo được tạo tại `data/inventory.db` trong lần chạy đầu tiên.
+Mở `http://127.0.0.1:8000`. Cơ sở dữ liệu mẫu được tạo tại `data/inventory.db` trong lần chạy đầu tiên.
 
 ### Chạy bằng Docker
 
@@ -98,7 +98,7 @@ Các endpoint làm thay đổi tồn kho yêu cầu header `Idempotency-Key` dà
 
 ## Giới hạn có chủ đích
 
-- SQLite phù hợp demo hoặc một tiến trình ứng dụng; khi mở rộng nhiều instance nên chuyển sang PostgreSQL.
+- SQLite phù hợp bản portfolio hoặc một tiến trình ứng dụng; khi mở rộng nhiều instance nên chuyển sang PostgreSQL.
 - Dữ liệu trên gói hosting miễn phí có thể bị đặt lại khi dịch vụ khởi động lại.
 - Chưa có thanh toán, hóa đơn điện tử, đa chi nhánh hoặc quy trình quên mật khẩu.
 - Doanh thu trong dashboard là giá trị đơn xác nhận, chưa trừ chi phí hoặc hoàn tiền.

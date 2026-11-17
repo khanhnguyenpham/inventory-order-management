@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: kho-gon-demo
+    name: kho-gon
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
