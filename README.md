@@ -4,6 +4,14 @@
 
 > Đây là ứng dụng web portfolio sử dụng dữ liệu mẫu. Không đại diện cho một cửa hàng hoặc doanh nghiệp thật.
 
+## Dùng trực tuyến
+
+- Ứng dụng: [https://kho-gon.onrender.com](https://kho-gon.onrender.com)
+- OpenAPI: [https://kho-gon.onrender.com/docs](https://kho-gon.onrender.com/docs)
+- Health check: [https://kho-gon.onrender.com/health](https://kho-gon.onrender.com/health)
+
+Render Free có thể tạm dừng dịch vụ khi không có truy cập; lần mở đầu tiên đôi khi cần chờ khoảng 30–60 giây. Dữ liệu SQLite trên bản trực tuyến là dữ liệu mẫu và có thể được khởi tạo lại sau khi dịch vụ được triển khai lại.
+
 ## Vấn đề nghiệp vụ
 
 Khi tồn kho và đơn hàng được ghi ở nhiều bảng tính, một lần gửi form lặp hoặc một đơn thất bại giữa chừng có thể khiến số lượng tồn không còn khớp. Kho Gọn xử lý các rủi ro đó bằng những quy tắc rõ ràng:
