@@ -4,6 +4,12 @@
 
 > Đây là ứng dụng web portfolio sử dụng dữ liệu mẫu. Không đại diện cho một cửa hàng hoặc doanh nghiệp thật.
 
+## Vị trí trong portfolio
+
+Kho Gọn là project tôi dùng để chứng minh năng lực **lập trình Python backend** sau phần phân tích dữ liệu: API không chỉ trả dữ liệu mà còn phải giữ đúng quy tắc nghiệp vụ khi request lỗi, gửi lặp hoặc nhiều sản phẩm thay đổi cùng lúc. Hai mảnh ghép còn lại là [phân tích vận hành](https://github.com/khanhnguyenpham/outpatient-operations-analysis) và [AI Systems](https://github.com/khanhnguyenpham/hospital-appointment-risk-system).
+
+Xem [lịch phát triển](CHANGELOG.md), [roadmap](ROADMAP.md) và [hành trình học tập 2022–2026](https://github.com/khanhnguyenpham).
+
 ## Dùng trực tuyến
 
 - Ứng dụng: [https://kho-gon.onrender.com](https://kho-gon.onrender.com)
