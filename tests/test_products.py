@@ -53,3 +53,19 @@ async def test_duplicate_sku_returns_conflict(client: AsyncClient, manager_heade
     duplicate = await client.post("/api/products", headers=manager_headers, json=payload)
     assert duplicate.status_code == 409
     assert duplicate.json()["error"]["code"] == "DUPLICATE_SKU"
+
+
+async def test_product_list_supports_pagination(client: AsyncClient, manager_headers: dict[str, str]):
+    first_page = await client.get("/api/products?limit=2", headers=manager_headers)
+    second_page = await client.get("/api/products?limit=2&offset=2", headers=manager_headers)
+
+    assert first_page.status_code == 200
+    assert second_page.status_code == 200
+    assert len(first_page.json()) == 2
+    assert len(second_page.json()) == 2
+    assert {item["id"] for item in first_page.json()}.isdisjoint({item["id"] for item in second_page.json()})
+
+
+async def test_product_pagination_rejects_invalid_values(client: AsyncClient, manager_headers: dict[str, str]):
+    assert (await client.get("/api/products?limit=0", headers=manager_headers)).status_code == 422
+    assert (await client.get("/api/products?offset=-1", headers=manager_headers)).status_code == 422

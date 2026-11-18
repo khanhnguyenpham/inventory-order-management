@@ -55,6 +55,8 @@ def list_products(
     search: str = "",
     low_stock_only: bool = False,
     include_inactive: bool = False,
+    limit: int = 100,
+    offset: int = 0,
 ) -> list[dict[str, Any]]:
     clauses = []
     parameters: list[Any] = []
@@ -67,6 +69,7 @@ def list_products(
     if low_stock_only:
         clauses.append("stock_quantity <= reorder_level")
     where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+    parameters.extend([limit, offset])
     with database.connect() as connection:
         rows = connection.execute(
             f"""
@@ -76,6 +79,7 @@ def list_products(
             FROM products
             {where}
             ORDER BY is_low_stock DESC, name COLLATE NOCASE
+            LIMIT ? OFFSET ?
             """,
             parameters,
         ).fetchall()

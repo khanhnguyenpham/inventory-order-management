@@ -123,12 +123,16 @@ def create_app(settings: Settings | None = None, *, seed_demo: bool = True) -> F
         search: str = Query(default="", max_length=100),
         low_stock_only: bool = False,
         include_inactive: bool = False,
+        limit: int = Query(default=100, ge=1, le=500),
+        offset: int = Query(default=0, ge=0),
     ) -> list[dict[str, Any]]:
         return list_products(
             database,
             search=search,
             low_stock_only=low_stock_only,
             include_inactive=include_inactive,
+            limit=limit,
+            offset=offset,
         )
 
     @application.post("/api/products", status_code=status.HTTP_201_CREATED, tags=["Sản phẩm"])
