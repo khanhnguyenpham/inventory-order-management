@@ -2,6 +2,12 @@
 
 Ngày trong tài liệu được lấy từ lịch sử Git của repository.
 
+## [1.1.0] - 2026-11-18
+
+- Thêm `limit` và `offset` cho API danh sách sản phẩm.
+- Giới hạn kích thước trang ở 1–500 bản ghi và từ chối offset âm.
+- Bổ sung test cho hai trang liên tiếp và các tham số không hợp lệ.
+
 ## [1.0.1] - 2026-11-18
 
 - Bổ sung bối cảnh project trong portfolio, lịch phát triển và roadmap.

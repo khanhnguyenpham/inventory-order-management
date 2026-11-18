@@ -110,6 +110,8 @@ Bộ test bao phủ đăng nhập, phân quyền, SKU trùng, rollback giao dị
 
 Các endpoint làm thay đổi tồn kho yêu cầu header `Idempotency-Key` dài 8–100 ký tự.
 
+`GET /api/products` hỗ trợ `search`, `low_stock_only`, `include_inactive`, `limit` và `offset`. `limit` nằm trong khoảng 1–500; phân trang được xử lý tại database thay vì tải toàn bộ danh mục về trình duyệt.
+
 ## Giới hạn có chủ đích
 
 - SQLite phù hợp bản portfolio hoặc một tiến trình ứng dụng; khi mở rộng nhiều instance nên chuyển sang PostgreSQL.
